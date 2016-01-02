@@ -1,0 +1,9 @@
+main: me.iamguus.ovo.OneVOne
+name: OneVOne
+version: 1.0
+author: iAmGuus
+commands:
+  ovo:
+    description: OneVOne Admin command
+    permission: ovo.admin
+    aliases: [onevone]
