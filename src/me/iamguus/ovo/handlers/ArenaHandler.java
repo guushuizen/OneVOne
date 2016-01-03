@@ -1,5 +1,6 @@
 package me.iamguus.ovo.handlers;
 
+import me.iamguus.ovo.classes.Map;
 import me.iamguus.ovo.classes.Arena;
 import me.iamguus.ovo.utils.ConfigUtil;
 import me.iamguus.ovo.utils.LocationUtil;
@@ -7,21 +8,18 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Guus on 2-1-2016.
  */
 public class ArenaHandler {
 
-    private Set<Arena> arenas = new HashSet<Arena>();
+    private List<Arena> arenas = new ArrayList<Arena>();
 
     private static ArenaHandler instance;
 
-    public Set<Arena> getArenas() { return this.arenas; }
+    public List<Arena> getArenas() { return this.arenas; }
 
     public Arena getArena(Player player) {
         for (Arena arena : arenas) {
@@ -43,9 +41,15 @@ public class ArenaHandler {
         return null;
     }
 
+    public Arena getRandomArena() {
+        return getArenas().get(new Random().nextInt(getArenas().size()));
+    }
+
     public void loadAllArenas() {
-        for (String s : ConfigUtil.get().getArena().getConfigurationSection("arenas").getKeys(false)) {
-            loadArenaFromConfig(ConfigUtil.get().getArena().getConfigurationSection("arenas." + s));
+        if (ConfigUtil.get().getArena().contains("arenas")) {
+            for (String s : ConfigUtil.get().getArena().getConfigurationSection("arenas").getKeys(false)) {
+                loadArenaFromConfig(ConfigUtil.get().getArena().getConfigurationSection("arenas." + s));
+            }
         }
     }
 
@@ -56,7 +60,8 @@ public class ArenaHandler {
             spawnLocs.add(LocationUtil.get().deserialize(s));
         }
         boolean enabled = section.getBoolean("enabled");
-        Arena arena = new Arena(id, spawnLocs, enabled);
+        Map map = MapHandler.get().getByName(section.getString("map"));
+        Arena arena = new Arena(id, spawnLocs, map, enabled);
         arenas.add(arena);
         return arena;
     }

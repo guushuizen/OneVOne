@@ -1,6 +1,5 @@
 package me.iamguus.ovo.classes;
 
-import me.iamguus.ovo.handlers.ArenaHandler;
 import me.iamguus.ovo.utils.ConfigUtil;
 import me.iamguus.ovo.utils.LocationUtil;
 import org.bukkit.Location;
@@ -19,18 +18,20 @@ public class Arena {
 
     private String id;
     private List<Location> spawnLocs;
+    private Map map;
     private List<UUID> ingame;
     private GameState gameState;
     private boolean enabled;
     private Queue<MatchInvite> queue;
 
-    public Arena(String id, List<Location> spawnLocs) {
-        this(id, spawnLocs, false);
+    public Arena(String id, List<Location> spawnLocs, Map map) {
+        this(id, spawnLocs, map, false);
     }
 
-    public Arena(String id, List<Location> spawnLocs, boolean enabled) {
+    public Arena(String id, List<Location> spawnLocs, Map map, boolean enabled) {
         this.id = id;
         this.spawnLocs = spawnLocs;
+        this.map = map;
         this.enabled = enabled;
         this.queue = new ArrayBlockingQueue<MatchInvite>(10);
 
@@ -47,6 +48,8 @@ public class Arena {
     public void setSpawnLocs(List<Location> spawnLocs) {
         this.spawnLocs = spawnLocs;
     }
+
+    public Map getMap() { return this.map; }
 
     public List<UUID> getIngame() {
         return ingame;
@@ -68,6 +71,7 @@ public class Arena {
             spawnLocsSave.add(LocationUtil.get().serialize(loc));
         }
         saveTo.set("arenas." + this.id + ".spawnlocs", spawnLocsSave);
+        saveTo.set("arenas." + this.id + ".map", this.map.getName());
         saveTo.set("arenas." + this.id + ".enabled", enabled);
         ConfigUtil.get().saveArena();
     }

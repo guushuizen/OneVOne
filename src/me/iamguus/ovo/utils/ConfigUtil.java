@@ -19,6 +19,12 @@ public class ConfigUtil {
     private File arenaFile;
     private FileConfiguration arena;
 
+    private File configFile;
+    private FileConfiguration config;
+
+    private File mapFile;
+    private FileConfiguration map;
+
     public void setup(Plugin p) {
         this.pluginDir = p.getDataFolder();
         if (!this.pluginDir.exists()) {
@@ -35,6 +41,21 @@ public class ConfigUtil {
         }
         arena = YamlConfiguration.loadConfiguration(arenaFile);
 
+        configFile = new File(this.pluginDir, "config.yml");
+        if (!configFile.exists()) {
+            p.saveResource("config.yml", true);
+        }
+        config = YamlConfiguration.loadConfiguration(configFile);
+
+        mapFile = new File(this.pluginDir, "maps.yml");
+        if (!mapFile.exists()) {
+            try {
+                mapFile.createNewFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        map = YamlConfiguration.loadConfiguration(mapFile);
     }
 
     public FileConfiguration getArena() {
@@ -48,6 +69,38 @@ public class ConfigUtil {
     public void saveArena() {
         try {
             this.arena.save(this.arenaFile);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public File getConfigFile() {
+        return configFile;
+    }
+
+    public FileConfiguration getConfig() {
+        return config;
+    }
+
+    public void saveConfig() {
+        try {
+            this.config.save(this.configFile);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public File getMapFile() {
+        return mapFile;
+    }
+
+    public FileConfiguration getMap() {
+        return map;
+    }
+
+    public void saveMap() {
+        try {
+            this.map.save(this.mapFile);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
