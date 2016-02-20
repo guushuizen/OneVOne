@@ -9,9 +9,9 @@ import java.util.List;
 /**
  * Created by Guus on 2-1-2016.
  */
-public class CustomZombie extends EntityZombie {
+public class CustomSheep extends EntitySheep {
 
-    public CustomZombie(org.bukkit.World world) {
+    public CustomSheep(org.bukkit.World world) {
         super(((CraftWorld)world).getHandle());
     }
 
@@ -27,6 +27,11 @@ public class CustomZombie extends EntityZombie {
 
     @Override
     public void setOnFire(int i) {
+
+    }
+
+    @Override
+    public void makeSound(String s, float f, float f1) {
 
     }
 

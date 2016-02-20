@@ -7,3 +7,5 @@ commands:
     description: OneVOne Admin command
     permission: ovo.admin
     aliases: [onevone]
+  stats:
+    description: OneVOne Stats command

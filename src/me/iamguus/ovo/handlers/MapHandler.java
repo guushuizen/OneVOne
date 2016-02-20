@@ -1,6 +1,7 @@
 package me.iamguus.ovo.handlers;
 
 import com.google.common.collect.Lists;
+import me.iamguus.ovo.classes.Arena;
 import me.iamguus.ovo.classes.Map;
 import me.iamguus.ovo.utils.ConfigUtil;
 import me.iamguus.ovo.utils.ItemStackUtil;
@@ -24,7 +25,7 @@ public class MapHandler {
         String name = section.getString("name");
         ItemStack item = ItemStackUtil.get().deserialize(section.getString("item"));
 
-        Map map = new Map(name, item, Lists.newArrayList());
+        Map map = new Map(name, item, new ArrayList<Arena>());
         maps.add(map);
     }
 

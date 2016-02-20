@@ -5,5 +5,5 @@ package me.iamguus.ovo.classes;
  */
 public enum GameState {
 
-    EMPTY, INGAME;
+    EMPTY, STARTING, INGAME;
 }

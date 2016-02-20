@@ -4,3 +4,4 @@ mysql:
   database: server
   username: root
   password: pass
+kit-region: kitmaker

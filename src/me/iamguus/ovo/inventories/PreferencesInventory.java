@@ -114,7 +114,7 @@ public class PreferencesInventory {
 
         for (int i = 0; i < MapHandler.get().getMaps().size(); i++) {
             Map map = MapHandler.get().getMaps().get(i);
-            inv.setItem(i, map.getItem());
+            inv.setItem(slots[i], map.getItem());
 
             ItemStack item = new ItemStack(Material.INK_SACK);
             ItemMeta im = item.getItemMeta();
@@ -130,7 +130,7 @@ public class PreferencesInventory {
             }
 
             item.setItemMeta(im);
-            inv.setItem(i + 1, item);
+            inv.setItem(slots[i] + 1, item);
         }
 
         return inv;

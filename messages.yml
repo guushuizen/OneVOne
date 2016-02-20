@@ -1,0 +1,29 @@
+commands:
+  lobby:
+    success: '&aSuccessfully set lobby at your current location!'
+  zombie:
+    success: '&aSuccessfully spawned a Queue Zombie at your current location!'
+  createmap:
+# use %map% for map name.
+    success: '&aSuccessfully created map %map%!'
+  spawnpoints:
+# use %index% for spawn point, %arena% for arena name.
+    success: '&aSuccessfully set spawn location %index% for arena %arena% at your current location!'
+    incorrect-index: '&cIncorrect index, can only be 1 or 2!'
+# use %arg% for given index
+    not-correct-index: '&c%arg% is not a correct integer!'
+# use %arena% for arena
+    arena-not-found: '&cArena %arena% was not found!'
+  createarena:
+# use %arena% for arena name.
+    success: "&aSuccessfully created arena %arena%!"
+  no-permission: "&cYou aren't allowed to execute this command!"
+duel:
+# use %opponent% for opponent's name, %health% for health
+  you-lost: '&aYou lost! %opponent% has won with %health% hearts left! Better luck next time!'
+  you-won: '&aCongratulations, you won! Here are some fancy fireworks.'
+  bye-won: '&aSee you in the next game!'
+
+  added-to-queue: "&aYou've been added to the queue!"
+misc:
+  enter-kitmaker: '&aWelcome to the KitMaker area, here you change your kit without limits!'

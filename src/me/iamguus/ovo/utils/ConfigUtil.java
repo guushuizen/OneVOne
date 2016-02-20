@@ -1,5 +1,6 @@
 package me.iamguus.ovo.utils;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -24,6 +25,12 @@ public class ConfigUtil {
 
     private File mapFile;
     private FileConfiguration map;
+
+    private File kitsFile;
+    private FileConfiguration kits;
+
+    private File messagesFile;
+    private FileConfiguration messages;
 
     public void setup(Plugin p) {
         this.pluginDir = p.getDataFolder();
@@ -56,6 +63,18 @@ public class ConfigUtil {
             }
         }
         map = YamlConfiguration.loadConfiguration(mapFile);
+
+        kitsFile = new File(this.pluginDir, "kits.yml");
+        if (!kitsFile.exists()) {
+            p.saveResource("kits.yml", true);
+        }
+        kits = YamlConfiguration.loadConfiguration(kitsFile);
+
+        messagesFile = new File(this.pluginDir, "messages.yml");
+        if (!messagesFile.exists()) {
+            p.saveResource("messages.yml", true);
+        }
+        messages = YamlConfiguration.loadConfiguration(messagesFile);
     }
 
     public FileConfiguration getArena() {
@@ -104,6 +123,48 @@ public class ConfigUtil {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public File getKitsFile() {
+        return kitsFile;
+    }
+
+    public FileConfiguration getKits() {
+        return kits;
+    }
+
+    public void saveKits() {
+        try {
+            this.kits.save(this.kitsFile);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public File getMessagesFile() {
+        return messagesFile;
+    }
+
+    public FileConfiguration getMessages() {
+        return messages;
+    }
+
+    public void saveMessages() {
+        try {
+            this.messages.save(this.messagesFile);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public Location getLobby() {
+        String sLoc = getConfig().getString("lobby");
+        return LocationUtil.get().deserialize(sLoc);
+    }
+
+    public void setLobby(Location loc) {
+        getConfig().set("lobby", LocationUtil.get().serialize(loc));
+        saveConfig();
     }
 
     public static ConfigUtil get() {

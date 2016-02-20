@@ -1,0 +1,12 @@
+kits:
+  Diamond:
+    name: Diamond Kit
+    items:
+    - id:276 amount:1
+    - id:261 amount:1
+    - id:262 amount:10
+    armor:
+    - id:310 amount:1
+    - id:311 amount:1
+    - id:312 amount:1
+    - id:313 amount:1

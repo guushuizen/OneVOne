@@ -1,31 +1,26 @@
 package me.iamguus.ovo.commands;
 
-import com.google.common.collect.Lists;
 import me.iamguus.ovo.classes.Arena;
 import me.iamguus.ovo.classes.Map;
 import me.iamguus.ovo.handlers.ArenaHandler;
+import me.iamguus.ovo.handlers.ChatHandler;
 import me.iamguus.ovo.handlers.MapHandler;
-import me.iamguus.ovo.handlers.MySQLHandler;
-import me.iamguus.ovo.utils.CustomZombie;
-import me.iamguus.ovo.utils.EntityTypes;
-import me.iamguus.ovo.utils.InventoryUtil;
-import org.bukkit.Bukkit;
+import me.iamguus.ovo.utils.*;
+import net.minecraft.server.v1_8_R2.EnumColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Guus on 2-1-2016.
@@ -42,14 +37,62 @@ public class OvOCommands implements CommandExecutor {
 
         if (cmd.getName().equalsIgnoreCase("ovo")) {
             if (player.hasPermission("ovo.admin")) {
+                if (args.length == 1) {
+                    if (args[0].equalsIgnoreCase("lobby")) {
+                        ConfigUtil.get().setLobby(player.getLocation());
+                        player.sendMessage(ChatHandler.get().sendMessage("commands.lobby.success"));
+                        return true;
+                    } else
+                    if (args[0].equalsIgnoreCase("zombie")) {
+                        CustomSheep sheep = new CustomSheep(player.getWorld());
+                        sheep.setCustomName(ChatColor.GREEN + "Join the queue!");
+                        sheep.setCustomNameVisible(true);
+                        sheep.setColor(EnumColor.RED);
+                        Location loc = player.getLocation();
+                        EntityTypes.spawnEntity(sheep, loc);
+//                        ((CraftWorld) loc.getWorld()).getHandle().addEntity(sheep);
+//                        sheep.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+                        System.out.println(LocationUtil.get().serialize(sheep.getBukkitEntity().getLocation()));
+                        player.sendMessage(ChatHandler.get().sendMessage("commands.zombie.success"));
+                        return true;
+                    }
+                } else
                 if (args.length == 2) {
                     if (args[0].equalsIgnoreCase("createmap")) {
                         String name = args[1];
-                        Map map = new Map(name, new ItemStack(Material.DIAMOND_SWORD), Lists.newArrayList());
+                        Map map = new Map(name, new ItemStack(Material.DIAMOND_SWORD), new ArrayList<Arena>());
                         map.save();
                         MapHandler.get().getMaps().add(map);
-                        player.sendMessage(ChatColor.GREEN + "Successfully created map " + name + "!");
-                    }
+                        player.sendMessage(ChatHandler.get().sendMessage("commands.createmap.success").replaceAll("%map%", name));
+                    } else // ovo setloc1 Dome1
+                    if (args[0].equalsIgnoreCase("setloc1")) {
+                        Arena arena = ArenaHandler.get().getArena(args[1]);
+                        if (arena != null) {
+                            Block targetBlock = player.getTargetBlock((Set<Material>) null, 6);
+                            if (targetBlock != null) {
+                                arena.setLoc1(targetBlock.getLocation());
+                                arena.save();
+                                player.sendMessage(ChatColor.GREEN + "Successfully set corner 1 to the block you're looking at!");
+                            }
+                        } else {
+                            player.sendMessage(ChatHandler.get().sendMessage("commands.spawnpoints.arena-not-found").replaceAll("%arena%", args[1]));
+                            return false;
+                        }
+                    } else // ovo setloc1 Dome1
+                        if (args[0].equalsIgnoreCase("setloc2")) {
+                            Arena arena = ArenaHandler.get().getArena(args[1]);
+                            if (arena != null) {
+                                Block targetBlock = player.getTargetBlock((Set<Material>) null, 6);
+                                if (targetBlock != null) {
+                                    arena.setLoc2(targetBlock.getLocation());
+                                    arena.save();
+                                    player.sendMessage(ChatColor.GREEN + "Successfully set corner 2 to the block you're looking at!");
+                                }
+                            } else {
+                                player.sendMessage(ChatHandler.get().sendMessage("commands.spawnpoints.arena-not-found").replaceAll("%arena%", args[1]));
+                                return false;
+                            }
+                        }
                 } else
                 if (args.length == 3) {
                     if (args[0].equalsIgnoreCase("spawnpoints")) {
@@ -59,19 +102,22 @@ public class OvOCommands implements CommandExecutor {
                             if (isInt(args[2])) {
                                 int index = Integer.parseInt(args[2]);
                                 if (index == 1 || index == 2) {
-                                    arena.getSpawnLocs().add(index - 1, player.getLocation());
+                                    List<Location> spawnLocs = arena.getSpawnLocs();
+                                    spawnLocs.add(index - 1, player.getLocation());
+                                    arena.setSpawnLocs(spawnLocs);
                                     arena.save();
-                                    player.sendMessage(ChatColor.GREEN + "Successfully set spawn location " + index + " for arena " + arena.getId() + " at your current location.");
+                                    player.sendMessage(ChatHandler.get().sendMessage("commands.spawnpoints.success").replaceAll("%index%", index + "").replaceAll("%arena%", arena.getId()));
                                     return true;
                                 } else {
-                                    player.sendMessage(ChatColor.RED + "Index can only be 1 or 2!");
+                                    player.sendMessage(ChatHandler.get().sendMessage("commands.spawnpoints.incorrect-index"));
                                     return false;
                                 }
                             } else {
-                                player.sendMessage(ChatColor.RED + args[2] + "is not an correct integer!");
+                                player.sendMessage(ChatHandler.get().sendMessage("commands.spawnpoints.not-correct-index").replaceAll("%arg%", args[2]));
+                                return false;
                             }
                         } else {
-                            player.sendMessage(ChatColor.RED + "Arena " + args[1] + "could not be found!");
+                            player.sendMessage(ChatHandler.get().sendMessage("commands.spawnpoints.arena-not-found").replaceAll("%arena%", args[1]));
                             return false;
                         }
                     } else
@@ -80,50 +126,18 @@ public class OvOCommands implements CommandExecutor {
                         String mapname = args[2];
                         if (MapHandler.get().getByName(mapname) != null) {
                             Map map = MapHandler.get().getByName(mapname);
-                            Arena arena = new Arena(name, Lists.newArrayList(), map);
+                            Arena arena = new Arena(name, new ArrayList<Location>(), null, null, map);
                             map.getArenas().add(arena);
                             arena.save();
+                            map.save();
                             player.sendMessage(ChatColor.GREEN + "Successfully created arena " + name);
                             ArenaHandler.get().getArenas().add(arena);
                             return true;
                         }
-//                        Arena arena = new Arena(name, Lists.newArrayList());
-//                        arena.save();
-//                        player.sendMessage(ChatColor.GREEN + "Successfully created arena " + name);
-//                        ArenaHandler.get().getArenas().add(arena);
-//                        return true;
-                    }
-                } else
-                if (args.length == 1) {
-                    if (args[0].equalsIgnoreCase("zombie")) {
-                        CustomZombie zombie = new CustomZombie(player.getWorld());
-                        zombie.setCustomName(ChatColor.GREEN + "Join the queue!");
-                        zombie.setCustomNameVisible(true);
-                        EntityTypes.spawnEntity(zombie, player.getLocation());
-//                        player.sendMessage();
-                    } else
-                    if (args[0].equalsIgnoreCase("inventory")) {
-                        try {
-                            ResultSet rs = MySQLHandler.get().executeQuery("SELECT kit_item FROM player_kit WHERE `uuid` = '" + player.getUniqueId() + "'");
-                            rs.next();
-                            String inv = new String(rs.getBlob("kit_item").getBytes(1l, (int) rs.getBlob("kit_item").length()));
-                            ItemStack[] decodedInv = InventoryUtil.itemStackArrayFromBase64(inv);
-                            player.getInventory().setContents(decodedInv);
-
-                            ResultSet armorRS = MySQLHandler.get().executeQuery("SELECT kit_armor FROM player_kit WHERE `uuid` = '" + player.getUniqueId() + "'");
-                            armorRS.next();
-                            String armor = new String(armorRS.getBlob("kit_armor").getBytes(1l, (int) armorRS.getBlob("kit_armor").length()));
-                            ItemStack[] armorInv = InventoryUtil.itemStackArrayFromBase64(armor);
-                            player.getInventory().setArmorContents(armorInv);
-                        } catch (SQLException ex) {
-                            ex.printStackTrace();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
                     }
                 }
             } else {
-                player.sendMessage(ChatColor.RED + "You are not allowed to execute this command!");
+                player.sendMessage(ChatHandler.get().sendMessage("commands.no-permission"));
                 return false;
             }
         }

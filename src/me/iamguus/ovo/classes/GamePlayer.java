@@ -1,5 +1,6 @@
 package me.iamguus.ovo.classes;
 
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -13,15 +14,17 @@ public class GamePlayer {
     private UUID uuid;
     private KitPreference kitpref;
     private List<Map> mappref;
-    private ItemStack[] kitItems;
-    private ItemStack[] armorItems;
+    private Kit kit;
+    private int kills;
+    private int deaths;
 
-    public GamePlayer(UUID uuid, int kitpref, List<Map> mappref, ItemStack[] kitItems, ItemStack[] armorItems) {
+    public GamePlayer(UUID uuid, int kitpref, List<Map> mappref, ItemStack[] kitItems, ItemStack[] armorItems, int kills, int deaths) {
         this.uuid = uuid;
         this.kitpref = KitPreference.getByID(kitpref);
         this.mappref = mappref;
-        this.kitItems = kitItems;
-        this.armorItems = armorItems;
+        this.kit = new Kit(Bukkit.getPlayer(uuid).getName() + "'s kit", kitItems, armorItems);
+        this.kills = kills;
+        this.deaths = deaths;
     }
 
     public UUID getUuid() {
@@ -34,11 +37,13 @@ public class GamePlayer {
 
     public List<Map> getMapPref() { return mappref; }
 
-    public ItemStack[] getKitItems() {
-        return kitItems;
-    }
+    public Kit getKit() { return this.kit; }
 
-    public ItemStack[] getArmorItems() {
-        return armorItems;
-    }
+    public int getKills() { return kills; }
+
+    public int getDeaths() { return deaths; }
+
+    public void setKills(int kills) { this.kills = kills; }
+
+    public void setDeaths(int deaths) { this.deaths = deaths; }
 }

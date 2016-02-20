@@ -9,12 +9,10 @@ public class MatchInvite {
 
     private UUID inviter;
     private UUID invited;
-    private Arena arena;
 
-    public MatchInvite(UUID inviter, UUID invited, Arena arena) {
+    public MatchInvite(UUID inviter, UUID invited) {
         this.inviter = inviter;
         this.invited = invited;
-        this.arena = arena;
     }
 
     public UUID getInviter() {
@@ -25,7 +23,4 @@ public class MatchInvite {
         return invited;
     }
 
-    public Arena getArena() {
-        return arena;
-    }
 }

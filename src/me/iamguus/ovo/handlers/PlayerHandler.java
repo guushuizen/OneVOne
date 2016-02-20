@@ -36,6 +36,8 @@ public class PlayerHandler {
             for (String s : temp.split(",")) {
                 mappref.add(MapHandler.get().getByName(s));
             }
+            int kills = playersRS.getInt("kills");
+            int deaths = playersRS.getInt("deaths");
 
             ResultSet kitRS = MySQLHandler.get().executeQuery("SELECT * FROM player_kit WHERE uuid = '" + uuid + "';");
             kitRS.next();
@@ -44,7 +46,7 @@ public class PlayerHandler {
 
             String armorString = new String(kitRS.getBlob("kit_armor").getBytes(1l, (int) kitRS.getBlob("kit_armor").length()));
             armor = InventoryUtil.itemStackArrayFromBase64(armorString);
-            GamePlayer gamePlayer = new GamePlayer(uuid, kitpref, mappref, items, armor);
+            GamePlayer gamePlayer = new GamePlayer(uuid, kitpref, mappref, items, armor, kills, deaths);
             playerMap.put(uuid, gamePlayer);
         } catch (SQLException ex) {
             ex.printStackTrace();

@@ -15,12 +15,15 @@ public class LocationUtil {
         if (loc == null) {
             return null;
         }
+
         StringBuilder sb = new StringBuilder();
 
         sb.append("w:" + loc.getWorld().getName() + " ");
-        sb.append("x:" + loc.getBlockX() + " ");
-        sb.append("y:" + loc.getBlockY() + " ");
-        sb.append("z:" + loc.getBlockZ());
+        sb.append("x:" + loc.getX() + " ");
+        sb.append("y:" + loc.getY() + " ");
+        sb.append("z:" + loc.getZ() + " ");
+        sb.append("yaw:" + loc.getYaw() + " ");
+        sb.append("pitch:" + loc.getPitch());
 
         return sb.toString();
     }
@@ -35,13 +38,17 @@ public class LocationUtil {
         String xS = parts[1].split(":")[1];
         String yS = parts[2].split(":")[1];
         String zS = parts[3].split(":")[1];
+        String yawS = parts[4].split(":")[1];
+        String pitchS = parts[5].split(":")[1];
 
         World w = Bukkit.getWorld(wS);
-        int x = Integer.parseInt(xS);
-        int y = Integer.parseInt(yS);
-        int z = Integer.parseInt(zS);
+        double x = Double.parseDouble(xS);
+        double y = Double.parseDouble(yS);
+        double z = Double.parseDouble(zS);
+        float yaw = Float.parseFloat(yawS);
+        float pitch = Float.parseFloat(pitchS);
 
-        Location loc = new Location(w, x, y, z);
+        Location loc = new Location(w, x, y, z, yaw, pitch);
         return loc;
     }
 
